@@ -15,7 +15,6 @@ app.use(bodyParser.json());
 const MONGO_URI = process.env.MONGO_URI; // ใช้ตัวแปร MONGO_URI จากไฟล์ .env
 
 mongoose.connect(MONGO_URI, {
-
 })
 .then(() => console.log('MongoDB connected successfully'))
 .catch(err => console.error('Error connecting to MongoDB:', err));
@@ -65,25 +64,27 @@ app.post('/login', async (req, res) => {
 
 // Middleware เพื่อตรวจสอบ JWT token
 const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization'];
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // รับ token จาก header ที่ส่งมาในรูปแบบ Bearer <token>
+
   if (!token) return res.status(403).send('No token provided');
+
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.status(500).send('Failed to authenticate token');
-    req.user = decoded; // ใช้ decoded payload ในการจัดการข้อมูลผู้ใช้
+    req.user = decoded; // เก็บข้อมูลผู้ใช้ที่ถูก decode จาก token
     next();
   });
 };
 
-// API สำหรับดึงข้อมูลผู้ใช้ทั้งหมด
-app.get('/users', async (req, res) => {
-    try {
-      const users = await User.find({});
-      res.status(200).json(users);
-    } catch (err) {
-      console.error('Error fetching users:', err);
-      res.status(500).send('Error fetching users');
-    }
-  });
+// API สำหรับดึงข้อมูลผู้ใช้ทั้งหมด (ป้องกันด้วย JWT)
+app.get('/users', verifyToken, async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.json(users); // ส่งข้อมูลผู้ใช้กลับไปยัง client
+  } catch (err) {
+    res.status(500).send('Error fetching users');
+  }
+});
 
 // Route ที่ป้องกันโดย JWT
 app.get('/protected', verifyToken, (req, res) => {

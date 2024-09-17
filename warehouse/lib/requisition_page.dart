@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:warehouse/services/api_service.dart'; // นำเข้า ApiService
 
-class WarehousePage extends StatefulWidget {
+class RequisitionPage extends StatefulWidget {
   @override
-  _WarehousePageState createState() => _WarehousePageState();
+  _RequisitionPageState createState() => _RequisitionPageState();
 }
 
-class _WarehousePageState extends State<WarehousePage> {
+class _RequisitionPageState extends State<RequisitionPage> {
   String? selectedCategory;
   String? selectedItem;
-  final TextEditingController _quantityController =
-      TextEditingController(); // เพิ่มตัวควบคุมสำหรับช่องจำนวน
+  final TextEditingController _quantityController = TextEditingController();
 
   Map<String, List<String>> categories = {
     'ไฟฟ้า': [
@@ -44,21 +43,24 @@ class _WarehousePageState extends State<WarehousePage> {
     ]
   };
 
-  void _saveParcel() async {
+  void _requisitionParcel() async {
     if (selectedCategory != null &&
         selectedItem != null &&
         _quantityController.text.isNotEmpty) {
       final int quantity = int.parse(_quantityController.text);
-      final response = await ApiService.addParcel(
+      final response = await ApiService.requisitionParcel(
           selectedCategory!, selectedItem!, quantity);
+
+      print('Response Status: ${response?.statusCode}');
+      print('Response Body: ${response?.body}');
 
       if (response != null && response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('บันทึกพัสดุสำเร็จ')),
+          SnackBar(content: Text('เบิกพัสดุสำเร็จ')),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('เกิดข้อผิดพลาดในการบันทึกพัสดุ')),
+          SnackBar(content: Text('เกิดข้อผิดพลาดในการเบิกพัสดุ')),
         );
       }
     } else {
@@ -72,7 +74,7 @@ class _WarehousePageState extends State<WarehousePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('คลังสินค้า'),
+        title: Text('เบิกพัสดุ'),
         backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
@@ -140,8 +142,8 @@ class _WarehousePageState extends State<WarehousePage> {
             ],
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _saveParcel,
-              child: Text('บันทึก'),
+              onPressed: _requisitionParcel,
+              child: Text('เบิกพัสดุ'),
             ),
           ],
         ),

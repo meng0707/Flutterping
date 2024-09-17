@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:warehouse/services/api_service.dart'; // นำเข้า ApiService
 
-class WarehousePage extends StatefulWidget {
+class RequisitionPositivePage extends StatefulWidget {
   @override
-  _WarehousePageState createState() => _WarehousePageState();
+  _RequisitionPositivePageState createState() =>
+      _RequisitionPositivePageState();
 }
 
-class _WarehousePageState extends State<WarehousePage> {
+class _RequisitionPositivePageState extends State<RequisitionPositivePage> {
   String? selectedCategory;
   String? selectedItem;
   final TextEditingController _quantityController =
@@ -44,7 +45,7 @@ class _WarehousePageState extends State<WarehousePage> {
     ]
   };
 
-  void _saveParcel() async {
+  void _addParcel() async {
     if (selectedCategory != null &&
         selectedItem != null &&
         _quantityController.text.isNotEmpty) {
@@ -54,11 +55,11 @@ class _WarehousePageState extends State<WarehousePage> {
 
       if (response != null && response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('บันทึกพัสดุสำเร็จ')),
+          SnackBar(content: Text('เพิ่มพัสดุสำเร็จ')),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('เกิดข้อผิดพลาดในการบันทึกพัสดุ')),
+          SnackBar(content: Text('เกิดข้อผิดพลาดในการเพิ่มพัสดุ')),
         );
       }
     } else {
@@ -72,7 +73,7 @@ class _WarehousePageState extends State<WarehousePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('คลังสินค้า'),
+        title: Text('เพิ่มพัสดุ'),
         backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
@@ -140,8 +141,8 @@ class _WarehousePageState extends State<WarehousePage> {
             ],
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _saveParcel,
-              child: Text('บันทึก'),
+              onPressed: _addParcel,
+              child: Text('เพิ่มพัสดุ'),
             ),
           ],
         ),

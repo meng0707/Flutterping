@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:warehouse/services/api_service.dart'; // แก้ไขตามตำแหน่งที่ไฟล์ ApiService อยู่
-import 'warehouse_page.dart'; // นำเข้าหน้า WarehousePage
+import 'home_page.dart'; // นำเข้าหน้า HomePage
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,10 +17,10 @@ class _LoginPageState extends State<LoginPage> {
     final response = await ApiService.login(username, password);
 
     if (response != null && response.statusCode == 200) {
-      // นำผู้ใช้ไปยังหน้า WarehousePage หลังจากล็อกอินสำเร็จ
-      Navigator.push(
+      // นำผู้ใช้ไปยังหน้า HomePage หลังจากล็อกอินสำเร็จ
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => WarehousePage()),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     } else {
       // แสดงข้อความผิดพลาดถ้าการล็อกอินไม่สำเร็จ

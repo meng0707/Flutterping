@@ -1,0 +1,29 @@
+import 'package:flutter/material.dart';
+
+class AppStyles {
+  static const Color primaryColor = Color(0xFF2196F3);
+  static const Color secondaryColor = Color(0xFF03DAC6);
+  static const Color textColor = Color(0xFF000000); // สีข้อความหลัก
+
+  static const TextStyle headerTextStyle = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: textColor, // กำหนดสีข้อความที่นี่
+  );
+
+  static const TextStyle subtitleTextStyle = TextStyle(
+    fontSize: 18,
+    color: textColor, // กำหนดสีข้อความที่นี่
+  );
+
+  static const TextStyle buttonTextStyle = TextStyle(
+    fontSize: 20,
+    color: Color.fromARGB(255, 230, 230, 230), // สีข้อความปุ่ม
+  );
+
+  static const EdgeInsets buttonPadding =
+      EdgeInsets.symmetric(vertical: 12, horizontal: 16);
+  static const RoundedRectangleBorder buttonShape = RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(8)),
+  );
+}

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:warehouse/services/api_service.dart'; // แก้ไขตามตำแหน่งที่ไฟล์ ApiService อยู่
+import 'package:warehouse/services/api_service.dart';
 import 'home_page.dart'; // นำเข้าหน้า HomePage
+import 'signup_page.dart'; // นำเข้าหน้า SignupPage
+import 'styles/login.dart'; // นำเข้า login_styles.dart สำหรับตกแต่ง
 
 class LoginPage extends StatefulWidget {
   @override
@@ -25,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       // แสดงข้อความผิดพลาดถ้าการล็อกอินไม่สำเร็จ
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed')),
+        SnackBar(content: Text('Login failed. Please try again.')),
       );
     }
   }
@@ -33,25 +35,77 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+      appBar: AppBar(
+        title: Text('Warehouse Login'),
+        backgroundColor: LoginStyles.primaryButtonColor, // ใช้สีจาก LoginStyles
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            // เพิ่ม SingleChildScrollView
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Icon(
+                  Icons.warehouse,
+                  size: 80,
+                  color: LoginStyles
+                      .primaryButtonColor, // ใช้ไอคอนเพื่อสื่อถึงธีมคลังสินค้า
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Login to Warehouse',
+                  style: LoginStyles
+                      .headerTextStyle, // ใช้สไตล์ข้อความจาก LoginStyles
+                  textAlign: TextAlign.center, // จัดกลางข้อความ
+                ),
+                SizedBox(height: 40),
+                TextField(
+                  controller: _usernameController,
+                  decoration: LoginStyles.inputDecoration.copyWith(
+                    labelText: 'Username',
+                    prefixIcon: Icon(Icons.person),
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  controller: _passwordController,
+                  decoration: LoginStyles.inputDecoration.copyWith(
+                    labelText: 'Password',
+                    prefixIcon: Icon(Icons.lock),
+                  ),
+                  obscureText: true,
+                ),
+                SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: _login,
+                  child: Text('Login',
+                      style: LoginStyles.buttonTextStyle), // เพิ่มสไตล์ข้อความ
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: LoginStyles
+                        .primaryButtonColor, // ใช้สีปุ่มจาก LoginStyles
+                    padding: LoginStyles
+                        .buttonPadding, // ใช้ padding จาก LoginStyles
+                    shape: LoginStyles
+                        .buttonShape, // ใช้รูปร่างปุ่มจาก LoginStyles
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {
+                    // นำผู้ใช้ไปยังหน้า SignupPage
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignupPage()),
+                    );
+                  },
+                  child: Text('หากยังไม่มีบัญชี กดสมัครตรงนี้เลย!!'),
+                ),
+              ],
             ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            ElevatedButton(
-              onPressed: _login,
-              child: Text('Login'),
-            ),
-          ],
+          ),
         ),
       ),
     );

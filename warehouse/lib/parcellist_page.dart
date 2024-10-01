@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:warehouse/services/api_service.dart'; // นำเข้า ApiService ที่ใช้เชื่อมต่อ API
 import 'styles/parcellist.dart'; // นำเข้าไฟล์สำหรับการตกแต่ง
+import 'item_edit_page.dart'; // นำเข้า ItemEditPage
 
 class ParcelListPage extends StatefulWidget {
   @override
@@ -26,6 +27,26 @@ class _ParcelListPageState extends State<ParcelListPage> {
       });
     } catch (e) {
       print('Error fetching parcels: $e');
+    }
+  }
+
+  Future<void> _deleteParcel(String itemId) async {
+    try {
+      final response =
+          await ApiService.deleteParcel(itemId); // เรียกใช้ฟังก์ชันลบพัสดุ
+      if (response != null && response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('ลบพัสดุเรียบร้อยแล้ว')),
+        );
+        // อัปเดตรายการหลังจากลบ
+        _fetchParcels();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('ไม่สามารถลบพัสดุได้')),
+        );
+      }
+    } catch (e) {
+      print('Error deleting parcel: $e');
     }
   }
 
@@ -70,6 +91,61 @@ class _ParcelListPageState extends State<ParcelListPage> {
                       'หมวดหมู่: ${parcel['category']} - จำนวน: ${parcel['quantity']}',
                       style: ParcelListStyles
                           .subtitleTextStyle, // ใช้สไตล์จาก parcellist.dart
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            // นำทางไปยังหน้าแก้ไขเมื่อกดปุ่มแก้ไข
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ItemEditPage(
+                                  itemId: parcel['_id'], // รหัสพัสดุ
+                                  itemName: parcel['item'],
+                                  category: parcel['category'],
+                                  quantity: parcel['quantity'],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            // ยืนยันการลบก่อนทำการลบ
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('ยืนยันการลบ'),
+                                  content:
+                                      Text('คุณแน่ใจหรือไม่ว่าจะลบพัสดุนี้?'),
+                                  actions: [
+                                    TextButton(
+                                      child: Text('ยกเลิก'),
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // ปิดกล่องยืนยัน
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text('ยืนยัน'),
+                                      onPressed: () {
+                                        _deleteParcel(parcel['_id']); // ลบพัสดุ
+                                        Navigator.of(context)
+                                            .pop(); // ปิดกล่องยืนยัน
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 );

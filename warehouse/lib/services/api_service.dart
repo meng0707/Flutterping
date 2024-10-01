@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -57,7 +58,16 @@ class ApiService {
   }
 
   // ฟังก์ชันสำหรับเข้าสู่ระบบ
-  static Future<http.Response?> login(String username, String password) async {
+  static Future<http.Response?> login(
+      String username, String password, BuildContext context) async {
+    if (username.isEmpty || password.isEmpty) {
+      // หาก username หรือ password ว่างเปล่า ให้แสดงข้อความแจ้งเตือน
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('กรุณากรอกชื่อผู้ใช้และรหัสผ่านให้ครบถ้วน')),
+      );
+      return null;
+    }
+
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
@@ -74,10 +84,20 @@ class ApiService {
         if (responseBody['token'] != null) {
           setJwtToken(responseBody['token']);
         }
+      } else {
+        // ถ้าการเข้าสู่ระบบไม่สำเร็จ (เช่น username หรือ password ผิด)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  'เข้าสู่ระบบไม่สำเร็จ โปรดตรวจสอบชื่อผู้ใช้และรหัสผ่าน')),
+        );
       }
       return response;
     } catch (e) {
       print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('เกิดข้อผิดพลาดในการเข้าสู่ระบบ')),
+      );
       return null;
     }
   }
@@ -128,6 +148,31 @@ class ApiService {
     }
   }
 
+  static Future<http.Response?> updateParcel(
+      String id, String item, String category, int quantity) async {
+    try {
+      final response = await http.put(
+        Uri.parse(
+            '$baseUrl/update-parcel/$id'), // ตรวจสอบว่า endpoint นี้ถูกต้อง
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization':
+              'Bearer ${_jwtToken ?? ''}', // ใช้ JWT token ใน header
+        },
+        body: jsonEncode(<String, dynamic>{
+          'item': item,
+          'category': category,
+          'quantity': quantity,
+        }),
+      );
+
+      return response;
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
   static Future<List<dynamic>> fetchParcels() async {
     try {
       final response = await http.get(
@@ -150,5 +195,13 @@ class ApiService {
       print('Error fetching parcels: $e');
       throw e; // โยนข้อผิดพลาดออกไป
     }
+  }
+
+  static Future<http.Response> deleteParcel(String itemId) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/parcel/$itemId'),
+      headers: {'Content-Type': 'application/json'},
+    );
+    return response;
   }
 }

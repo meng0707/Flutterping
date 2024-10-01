@@ -16,7 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   void _login() async {
     final username = _usernameController.text;
     final password = _passwordController.text;
-    final response = await ApiService.login(username, password);
+    final response = await ApiService.login(username, password, context);
 
     if (response != null && response.statusCode == 200) {
       // นำผู้ใช้ไปยังหน้า HomePage หลังจากล็อกอินสำเร็จ

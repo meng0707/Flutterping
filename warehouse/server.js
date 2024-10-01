@@ -13,10 +13,9 @@ app.use(bodyParser.json());
 // เชื่อมต่อกับ MongoDB
 const MONGO_URI = process.env.MONGO_URI; // ใช้ตัวแปร MONGO_URI จากไฟล์ .env
 
-mongoose.connect(MONGO_URI, {
-})
-.then(() => console.log('MongoDB connected successfully'))
-.catch(err => console.error('Error connecting to MongoDB:', err));
+mongoose.connect(MONGO_URI, {})
+  .then(() => console.log('MongoDB connected successfully'))
+  .catch(err => console.error('Error connecting to MongoDB:', err));
 
 // สร้าง schema และ model สำหรับพัสดุ
 const parcelSchema = new mongoose.Schema({
@@ -40,7 +39,6 @@ const User = mongoose.model('User', userSchema);
 app.post('/signup', async (req, res) => {
   try {
     const { username, password } = req.body;
-    // ตรวจสอบว่าผู้ใช้มีอยู่แล้วหรือไม่
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).send('Username already exists');
@@ -62,7 +60,6 @@ app.post('/login', async (req, res) => {
     if (!user) {
       return res.status(401).send('Invalid username or password');
     }
-    // สร้าง JWT token
     const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ token });
   } catch (err) {
@@ -74,13 +71,13 @@ app.post('/login', async (req, res) => {
 // Middleware เพื่อตรวจสอบ JWT token
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // รับ token จาก header ที่ส่งมาในรูปแบบ Bearer <token>
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) return res.status(403).send('No token provided');
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.status(500).send('Failed to authenticate token');
-    req.user = decoded; // เก็บข้อมูลผู้ใช้ที่ถูก decode จาก token
+    req.user = decoded;
     next();
   });
 };
@@ -89,7 +86,7 @@ const verifyToken = (req, res, next) => {
 app.get('/users', verifyToken, async (req, res) => {
   try {
     const users = await User.find({});
-    res.json(users); // ส่งข้อมูลผู้ใช้กลับไปยัง client
+    res.json(users);
   } catch (err) {
     res.status(500).send('Error fetching users');
   }
@@ -100,19 +97,15 @@ app.post('/add-parcel', verifyToken, async (req, res) => {
   try {
     const { category, item, quantity } = req.body;
 
-    // ตรวจสอบว่าข้อมูลครบถ้วน
     if (!category || !item || quantity == null) {
       return res.status(400).send('กรุณากรอกข้อมูลให้ครบถ้วน');
     }
 
-    // ค้นหาพัสดุที่มีอยู่แล้วในฐานข้อมูล
     let parcel = await Parcel.findOne({ category, item, user: req.user.username });
 
     if (parcel) {
-      // หากพัสดุมีอยู่แล้วในระบบ เพิ่มจำนวนพัสดุ
       parcel.quantity += quantity;
     } else {
-      // หากพัสดุไม่มีในระบบ สร้างพัสดุใหม่
       parcel = new Parcel({
         category,
         item,
@@ -121,9 +114,7 @@ app.post('/add-parcel', verifyToken, async (req, res) => {
       });
     }
 
-    // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
     await parcel.save();
-
     res.status(200).send('เพิ่มพัสดุสำเร็จ');
   } catch (err) {
     console.error('Error adding parcel:', err);
@@ -131,13 +122,11 @@ app.post('/add-parcel', verifyToken, async (req, res) => {
   }
 });
 
-
 // API สำหรับดึงข้อมูลพัสดุทั้งหมด (ป้องกันด้วย JWT)
 app.get('/parcels', verifyToken, async (req, res) => {
   try {
-    // ดึงพัสดุทั้งหมดที่ถูกบันทึก
     const parcels = await Parcel.find({});
-    res.json(parcels); // ส่งข้อมูลพัสดุกลับไปยัง client
+    res.json(parcels);
   } catch (err) {
     res.status(500).send('Error fetching parcels');
   }
@@ -148,33 +137,28 @@ app.post('/requisition-parcel', verifyToken, async (req, res) => {
   try {
     const { category, item, quantity } = req.body;
 
-    // ตรวจสอบว่าข้อมูลครบถ้วน
     if (!category || !item || !quantity) {
       return res.status(400).send('กรุณากรอกข้อมูลให้ครบถ้วน');
     }
 
-    // ค้นหาพัสดุที่ตรงตามเงื่อนไข
     const parcels = await Parcel.find({ category, item });
-if (parcels.length === 0) {
-  return res.status(404).send('ไม่พบพัสดุ');
-}
+    if (parcels.length === 0) {
+      return res.status(404).send('ไม่พบพัสดุ');
+    }
 
-// จัดการกับรายการพัสดุที่ค้นพบ
-for (const parcel of parcels) {
-  if (parcel.quantity >= quantity) {
-    parcel.quantity -= quantity;
-    await parcel.save(); // อัปเดตพัสดุ
-    res.status(200).send('เบิกพัสดุสำเร็จ');
-    return;
-  } else {
-    // หากพัสดุในรายการนี้มีจำนวนไม่เพียงพอ
-    quantity -= parcel.quantity;
-    parcel.quantity = 0;
-    await parcel.save(); // อัปเดตพัสดุ
-  }
-}
+    for (const parcel of parcels) {
+      if (parcel.quantity >= quantity) {
+        parcel.quantity -= quantity;
+        await parcel.save();
+        res.status(200).send('เบิกพัสดุสำเร็จ');
+        return;
+      } else {
+        quantity -= parcel.quantity;
+        parcel.quantity = 0;
+        await parcel.save();
+      }
+    }
 
-    // หากจำนวนพัสดุที่ต้องการมากเกินกว่าที่มีอยู่
     res.status(400).send('จำนวนพัสดุไม่เพียงพอ');
   } catch (err) {
     console.error('Error requisitioning parcel:', err);
@@ -182,9 +166,53 @@ for (const parcel of parcels) {
   }
 });
 
-// Route ที่ป้องกันโดย JWT
-app.get('/protected', verifyToken, (req, res) => {
-  res.status(200).send('This is a protected route');
+// API สำหรับอัปเดตพัสดุ
+app.put('/update-parcel/:id', verifyToken, async (req, res) => {
+  try {
+    const parcelId = req.params.id; // รับ parcel ID จากพารามิเตอร์
+    const { category, item, quantity } = req.body; // รับข้อมูลจาก body
+
+    // ตรวจสอบว่าข้อมูลครบถ้วน
+    if (!category || !item || quantity == null) {
+      return res.status(400).send('กรุณากรอกข้อมูลให้ครบถ้วน');
+    }
+
+    // ค้นหาพัสดุที่มี ID ตรงกัน
+    const parcel = await Parcel.findById(parcelId);
+    if (!parcel) {
+      return res.status(404).send('ไม่พบพัสดุที่ต้องการอัปเดต');
+    }
+
+    // อัปเดตข้อมูลพัสดุ
+    parcel.category = category;
+    parcel.item = item;
+    parcel.quantity = quantity;
+
+    // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
+    await parcel.save();
+
+    res.status(200).send('อัปเดตพัสดุสำเร็จ');
+  } catch (err) {
+    console.error('Error updating parcel:', err);
+    res.status(500).send('Error updating parcel');
+  }
+});
+
+
+app.delete('/parcel/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedParcel = await Parcel.findByIdAndDelete(id);
+
+    if (!deletedParcel) {
+      return res.status(404).send({ message: 'ไม่พบพัสดุที่ต้องการลบ' });
+    }
+
+    res.status(200).send({ message: 'ลบพัสดุเรียบร้อยแล้ว', deletedParcel });
+  } catch (error) {
+    console.error('Error deleting parcel:', error);
+    res.status(500).send({ message: 'เกิดข้อผิดพลาดในการลบพัสดุ' });
+  }
 });
 
 // เริ่มต้นเซิร์ฟเวอร์

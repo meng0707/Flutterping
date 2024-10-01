@@ -14,6 +14,15 @@ class _SignupPageState extends State<SignupPage> {
   void _signup() async {
     final username = _usernameController.text;
     final password = _passwordController.text;
+
+    // ตรวจสอบว่าฟิลด์ชื่อผู้ใช้และรหัสผ่านไม่ว่างเปล่า
+    if (username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('กรุณากรอกชื่อผู้ใช้และรหัสผ่านให้ครบถ้วน')),
+      );
+      return; // หยุดการทำงานหากมีฟิลด์ว่าง
+    }
+
     final response = await ApiService.signup(username, password);
     if (response != null && response.statusCode == 200) {
       // การสมัครสมาชิกสำเร็จ

@@ -8,12 +8,19 @@ class ApiService {
 
   // เก็บ JWT token ที่ได้รับจากการล็อกอิน
   static String? _jwtToken;
+  static String? _refreshToken; // ตัวแปรสำหรับเก็บ refresh token
 
   // ฟังก์ชันสำหรับตั้งค่า JWT token
   static void setJwtToken(String token) {
     _jwtToken = token;
   }
 
+  // ฟังก์ชันสำหรับตั้งค่า Refresh token
+  static void setRefreshToken(String token) {
+    _refreshToken = token;
+  }
+
+  // ฟังก์ชันสำหรับลงทะเบียน (signup)
   static Future<http.Response?> signup(String username, String password) async {
     try {
       final response = await http.post(
@@ -45,15 +52,13 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        // หากการตอบสนองของเซิร์ฟเวอร์เป็น 200 OK
-        // แปลงข้อมูล JSON เป็น List<dynamic>
         return json.decode(response.body) as List<dynamic>;
       } else {
         throw Exception('Failed to load users');
       }
     } catch (e) {
       print('Error: $e');
-      throw e; // โยนข้อผิดพลาดออกไป
+      throw e;
     }
   }
 
@@ -61,7 +66,6 @@ class ApiService {
   static Future<http.Response?> login(
       String username, String password, BuildContext context) async {
     if (username.isEmpty || password.isEmpty) {
-      // หาก username หรือ password ว่างเปล่า ให้แสดงข้อความแจ้งเตือน
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('กรุณากรอกชื่อผู้ใช้และรหัสผ่านให้ครบถ้วน')),
       );
@@ -84,8 +88,10 @@ class ApiService {
         if (responseBody['token'] != null) {
           setJwtToken(responseBody['token']);
         }
+        if (responseBody['refreshToken'] != null) {
+          setRefreshToken(responseBody['refreshToken']);
+        }
       } else {
-        // ถ้าการเข้าสู่ระบบไม่สำเร็จ (เช่น username หรือ password ผิด)
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
@@ -102,6 +108,7 @@ class ApiService {
     }
   }
 
+  // ฟังก์ชันสำหรับเพิ่มพัสดุ
   static Future<http.Response?> addParcel(
       String category, String item, int quantity) async {
     try {
@@ -125,6 +132,7 @@ class ApiService {
     }
   }
 
+  // ฟังก์ชันสำหรับการเรียกใช้พัสดุ
   static Future<http.Response?> requisitionParcel(
       String category, String item, int quantity) async {
     try {
@@ -148,12 +156,12 @@ class ApiService {
     }
   }
 
+  // ฟังก์ชันสำหรับอัปเดตพัสดุ
   static Future<http.Response?> updateParcel(
       String id, String item, String category, int quantity) async {
     try {
       final response = await http.put(
-        Uri.parse(
-            '$baseUrl/update-parcel/$id'), // ตรวจสอบว่า endpoint นี้ถูกต้อง
+        Uri.parse('$baseUrl/update-parcel/$id'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization':
@@ -173,18 +181,18 @@ class ApiService {
     }
   }
 
+  // ฟังก์ชันสำหรับดึงพัสดุ
   static Future<List<dynamic>> fetchParcels() async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/parcels'), // ตรวจสอบว่า endpoint ตรงนี้ถูกต้อง
+        Uri.parse('$baseUrl/parcels'),
         headers: <String, String>{
           'Authorization':
-              'Bearer ${_jwtToken ?? ''}', // เช็คว่า JWT token ถูกส่งไปหรือไม่ (ถ้าจำเป็น)
+              'Bearer ${_jwtToken ?? ''}', // เช็คว่า JWT token ถูกส่งไปหรือไม่
         },
       );
 
       if (response.statusCode == 200) {
-        // ตรวจสอบการตอบสนองจาก API
         final parsedData = json.decode(response.body);
         print('Response Data: $parsedData'); // Debug: พิมพ์ข้อมูลที่ได้จาก API
         return parsedData as List<dynamic>;
@@ -193,15 +201,45 @@ class ApiService {
       }
     } catch (e) {
       print('Error fetching parcels: $e');
-      throw e; // โยนข้อผิดพลาดออกไป
+      throw e;
     }
   }
 
+  // ฟังก์ชันสำหรับลบพัสดุ
   static Future<http.Response> deleteParcel(String itemId) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/parcel/$itemId'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${_jwtToken ?? ''}', // ใช้ JWT token ใน header
+      },
     );
     return response;
+  }
+
+  // ฟังก์ชันสำหรับ refresh token
+  static Future<void> refreshToken() async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/refresh-token'), // ตรวจสอบว่า endpoint ถูกต้อง
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'refreshToken': _refreshToken ?? '',
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        if (responseBody['token'] != null) {
+          setJwtToken(responseBody['token']);
+        }
+      } else {
+        throw Exception('Failed to refresh token');
+      }
+    } catch (e) {
+      print('Error refreshing token: $e');
+    }
   }
 }

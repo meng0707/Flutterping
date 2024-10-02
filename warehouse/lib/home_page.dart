@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'add_page.dart';
 import 'Withdraw_page.dart';
 import 'Parcellist_page.dart';
+import 'login_page.dart'; // นำเข้า LoginPage
 import 'styles/home.dart'; // นำเข้า styles.dart
 
 class HomePage extends StatelessWidget {
@@ -42,6 +43,22 @@ class HomePage extends StatelessWidget {
                 AppStyles.primaryButtonColor,
                 ParcelListPage(),
               ),
+              SizedBox(height: 20), // เพิ่มระยะห่างสำหรับปุ่ม Logout
+              ElevatedButton(
+                onPressed: () {
+                  _logout(context); // เรียกใช้ฟังก์ชัน Logout
+                },
+                child: Text(
+                  'Logout',
+                  style: AppStyles.buttonTextStyle,
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      AppStyles.secondaryButtonColor, // ปรับสีปุ่มตามต้องการ
+                  padding: AppStyles.buttonPadding,
+                  shape: AppStyles.buttonShape,
+                ),
+              ),
             ],
           ),
         ),
@@ -68,6 +85,15 @@ class HomePage extends StatelessWidget {
         padding: AppStyles.buttonPadding,
         shape: AppStyles.buttonShape,
       ),
+    );
+  }
+
+  void _logout(BuildContext context) {
+    // คุณสามารถเพิ่มโค้ดสำหรับการ Logout ที่นี่ เช่น การลบ token หรือข้อมูลการเข้าสู่ระบบ
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => LoginPage()), // นำไปยังหน้า LoginPage
     );
   }
 }

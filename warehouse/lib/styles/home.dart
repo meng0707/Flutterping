@@ -9,7 +9,7 @@ class AppStyles {
   // กำหนดสไตล์ข้อความในปุ่ม
   static const TextStyle buttonTextStyle = TextStyle(
     fontSize: 18,
-    color: Colors.white, // สีข้อความในปุ่ม
+    color: Color.fromARGB(255, 248, 248, 248), // สีข้อความในปุ่ม
     fontWeight: FontWeight.bold, // ทำให้ข้อความตัวหนา
   );
 

@@ -73,8 +73,12 @@ class _WarehousePageState extends State<WarehousePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('เพิ่มพัสดุ'),
-        backgroundColor: WarehouseStyles.appBarColor,
+        title: Text(
+          'Add parcel',
+          style: WarehouseStyles.appBarTextStyle, // ใช้สไตล์ที่สร้างไว้
+        ),
+        backgroundColor:
+            WarehouseStyles.appBarColor, // ใช้สีของ AppBar จากสไตล์ที่สร้างไว้
       ),
       body: Container(
         decoration: WarehouseStyles.backgroundDecoration,

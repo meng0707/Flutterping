@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Warehouse App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: AppStyles.primaryColor, // ใช้สีพื้นฐาน
         primarySwatch: Colors.blue,
@@ -114,8 +115,8 @@ class MyHomePage extends StatelessWidget {
                   },
                   child: Text('เข้าสู่ระบบ'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        AppStyles.primaryColor, // เปลี่ยนสีปุ่มจาก styles.dart
+                    backgroundColor: const Color.fromARGB(
+                        255, 75, 174, 255), // เปลี่ยนสีปุ่มจาก styles.dart
                     padding:
                         AppStyles.buttonPadding, // ใช้ padding จาก styles.dart
                     textStyle: AppStyles.buttonTextStyle.copyWith(

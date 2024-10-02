@@ -10,7 +10,7 @@ class ParcelListStyles {
   static const TextStyle appBarTextStyle = TextStyle(
     fontSize: 22,
     fontWeight: FontWeight.bold,
-    color: Colors.white,
+    color: Color.fromARGB(255, 0, 0, 0),
   );
 
   static const TextStyle titleTextStyle = TextStyle(

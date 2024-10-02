@@ -32,7 +32,7 @@ class HomePage extends StatelessWidget {
                 context,
                 'เบิกพัสดุ',
                 Icons.assignment,
-                AppStyles.secondaryButtonColor,
+                const Color.fromARGB(255, 76, 235, 158),
                 RequisitionPage(),
               ),
               SizedBox(height: 20),
@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
                 context,
                 'แสดงรายการพัสดุ',
                 Icons.list,
-                AppStyles.primaryButtonColor,
+                const Color.fromARGB(255, 247, 178, 30),
                 ParcelListPage(),
               ),
               SizedBox(height: 20), // เพิ่มระยะห่างสำหรับปุ่ม Logout
@@ -53,8 +53,8 @@ class HomePage extends StatelessWidget {
                   style: AppStyles.buttonTextStyle,
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      AppStyles.secondaryButtonColor, // ปรับสีปุ่มตามต้องการ
+                  backgroundColor: const Color.fromARGB(
+                      255, 243, 86, 46), // ปรับสีปุ่มตามต้องการ
                   padding: AppStyles.buttonPadding,
                   shape: AppStyles.buttonShape,
                 ),

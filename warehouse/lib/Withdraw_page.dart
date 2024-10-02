@@ -72,8 +72,12 @@ class _RequisitionPageState extends State<RequisitionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Receive the parcel'),
-        backgroundColor: WithdrawStyles.appBarColor,
+        title: Text(
+          'Receive the parcel',
+          style: WithdrawStyles.appBarTextStyle, // ใช้สไตล์ที่สร้างไว้
+        ),
+        backgroundColor:
+            WithdrawStyles.appBarColor, // ใช้สีของ AppBar จากสไตล์ที่สร้างไว้
       ),
       body: Center(
         child: Padding(

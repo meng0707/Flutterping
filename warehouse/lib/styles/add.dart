@@ -74,6 +74,14 @@ class WarehouseStyles {
     ),
   );
 
+// สไตล์ข้อความใน AppBar
+  static const TextStyle appBarTextStyle = TextStyle(
+    fontSize: 24, // เพิ่มขนาดฟอนต์ให้ใหญ่ขึ้น
+    fontWeight: FontWeight.bold, // ทำให้ฟอนต์หนาขึ้น
+    color: Color.fromARGB(
+        255, 8, 8, 8), // กำหนดสีของข้อความเป็นสีขาวเพื่อความชัดเจน
+  );
+
   // รูปแบบพื้นหลัง
   static BoxDecoration backgroundDecoration = BoxDecoration(
     color: backgroundColor,

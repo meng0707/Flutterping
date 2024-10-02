@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'signup_page.dart'; // นำเข้าหน้า SignupPage
-import 'login_page.dart'; // นำเข้าหน้า LoginPage
+import 'Signup_page.dart'; // นำเข้าหน้า SignupPage
+import 'Login_page.dart'; // นำเข้าหน้า LoginPage
 import 'styles/maincss.dart';
 
 void main() {
@@ -41,60 +41,92 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.warehouse,
-                size: 100,
-                color: AppStyles.primaryColor, // ใช้สีจาก styles.dart
-              ),
-              SizedBox(height: 20),
-              Text(
-                'ยินดีต้อนรับสู่ต่างโลกครับ :) ',
-                style: AppStyles.headerTextStyle, // ใช้สไตล์จาก styles.dart
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-              Text(
-                'โปรดเลือกครับบบ:',
-                style: AppStyles.subtitleTextStyle, // ใช้สไตล์จาก styles.dart
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/signup');
-                },
-                child: Text('สมัครสมาชิก'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(
-                      255, 110, 156, 255), // ใช้สีปุ่มจาก styles.dart
-                  padding:
-                      AppStyles.buttonPadding, // ใช้ padding จาก styles.dart
-                  textStyle: AppStyles
-                      .buttonTextStyle, // ใช้สไตล์ข้อความจาก styles.dart
-                  shape: AppStyles.buttonShape, // ใช้รูปร่างปุ่มจาก styles.dart
+          child: SingleChildScrollView(
+            // ทำให้สามารถเลื่อนดูได้
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                // Icon with shadow effect
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundColor: AppStyles.primaryColor,
+                    child: Icon(
+                      Icons.warehouse,
+                      size: 60,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/login');
-                },
-                child: Text('เข้าสู่ระบบ'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      AppStyles.secondaryColor, // ใช้สีปุ่มรองจาก styles.dart
-                  padding:
-                      AppStyles.buttonPadding, // ใช้ padding จาก styles.dart
-                  textStyle: AppStyles
-                      .buttonTextStyle, // ใช้สไตล์ข้อความจาก styles.dart
-                  shape: AppStyles.buttonShape, // ใช้รูปร่างปุ่มจาก styles.dart
+                SizedBox(height: 20),
+                Text(
+                  'ยินดีต้อนรับสู่ระบบคลังสินค้า',
+                  style: AppStyles.headerTextStyle.copyWith(
+                    fontSize: 24, // เพิ่มขนาดฟอนต์
+                    color: AppStyles.primaryColor, // ใช้สีจาก styles.dart
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-            ],
+                SizedBox(height: 20),
+                Text(
+                  'Please choose:',
+                  style: AppStyles.subtitleTextStyle.copyWith(
+                    fontSize: 18, // เพิ่มขนาดฟอนต์
+                    color: AppStyles.secondaryColor, // ใช้สีจาก styles.dart
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 40),
+                // ปรับปรุงปุ่มให้มีมุมโค้งมน
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/signup');
+                  },
+                  child: Text('สมัครสมาชิก'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppStyles
+                        .secondaryColor, // เปลี่ยนสีปุ่มจาก styles.dart
+                    padding:
+                        AppStyles.buttonPadding, // ใช้ padding จาก styles.dart
+                    textStyle: AppStyles.buttonTextStyle.copyWith(
+                      color: Colors.black, // กำหนดสีข้อความให้เป็นสีดำ
+                    ),
+                    shape:
+                        AppStyles.buttonShape, // ใช้รูปร่างปุ่มจาก styles.dart
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: Text('เข้าสู่ระบบ'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        AppStyles.primaryColor, // เปลี่ยนสีปุ่มจาก styles.dart
+                    padding:
+                        AppStyles.buttonPadding, // ใช้ padding จาก styles.dart
+                    textStyle: AppStyles.buttonTextStyle.copyWith(
+                      color: Colors.white, // เปลี่ยนสีข้อความให้เป็นสีขาว
+                    ),
+                    shape:
+                        AppStyles.buttonShape, // ใช้รูปร่างปุ่มจาก styles.dart
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

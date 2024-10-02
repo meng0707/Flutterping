@@ -72,87 +72,120 @@ class _RequisitionPageState extends State<RequisitionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('เบิกพัสดุ'),
-        backgroundColor: WithdrawStyles.appBarColor, // ใช้สีจาก Withdraw.dart
+        title: Text('Receive the parcel'),
+        backgroundColor: WithdrawStyles.appBarColor,
       ),
       body: Center(
-        // ใช้ Center widget
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
-            // เพิ่ม SingleChildScrollView เพื่อรองรับการเลื่อน
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center, // ปรับให้กึ่งกลาง
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  'เลือกประเภทพัสดุ',
-                  style: WithdrawStyles
-                      .headerTextStyle, // ใช้สไตล์จาก Withdraw.dart
-                ),
-                DropdownButton<String>(
-                  hint: Text('เลือกประเภท'),
-                  value: selectedCategory,
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedCategory = newValue;
-                      selectedItem =
-                          null; // รีเซ็ตตัวเลือกพัสดุเมื่อเปลี่ยนหมวดหมู่
-                    });
-                  },
-                  items: categories.keys.map((category) {
-                    return DropdownMenuItem<String>(
-                      value: category,
-                      child: Text(category),
-                    );
-                  }).toList(),
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'เลือกประเภทพัสดุ',
+                          style: WithdrawStyles.headerTextStyle,
+                        ),
+                        DropdownButton<String>(
+                          hint: Text('เลือกประเภท'),
+                          value: selectedCategory,
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedCategory = newValue;
+                              selectedItem = null;
+                            });
+                          },
+                          items: categories.keys.map((category) {
+                            return DropdownMenuItem<String>(
+                              value: category,
+                              child: Text(category),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 if (selectedCategory != null) ...[
                   SizedBox(height: 20),
-                  Text(
-                    'เลือกพัสดุ',
-                    style: WithdrawStyles
-                        .headerTextStyle, // ใช้สไตล์จาก Withdraw.dart
-                  ),
-                  DropdownButton<String>(
-                    hint: Text('เลือกพัสดุ'),
-                    value: selectedItem,
-                    onChanged: (newValue) {
-                      setState(() {
-                        selectedItem = newValue;
-                      });
-                    },
-                    items: categories[selectedCategory]!.map((item) {
-                      return DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }).toList(),
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'เลือกพัสดุ',
+                            style: WithdrawStyles.headerTextStyle,
+                          ),
+                          DropdownButton<String>(
+                            hint: Text('เลือกพัสดุ'),
+                            value: selectedItem,
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedItem = newValue;
+                              });
+                            },
+                            items: categories[selectedCategory]!.map((item) {
+                              return DropdownMenuItem<String>(
+                                value: item,
+                                child: Text(item),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
                 if (selectedItem != null) ...[
                   SizedBox(height: 20),
-                  Text(
-                    'ใส่จำนวนพัสดุ',
-                    style: WithdrawStyles
-                        .headerTextStyle, // ใช้สไตล์จาก Withdraw.dart
-                  ),
-                  TextField(
-                    controller: _quantityController,
-                    decoration: InputDecoration(
-                      hintText: 'กรอกจำนวน',
-                      border: WithdrawStyles
-                          .textFieldBorder, // ใช้ border จาก Withdraw.dart
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    keyboardType:
-                        TextInputType.number, // ตั้งให้รองรับการป้อนตัวเลข
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'ใส่จำนวนพัสดุ',
+                            style: WithdrawStyles.headerTextStyle,
+                          ),
+                          TextField(
+                            controller: _quantityController,
+                            decoration: InputDecoration(
+                              hintText: 'กรอกจำนวน',
+                              border: WithdrawStyles.textFieldBorder,
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _requisitionParcel,
                   child: Text('เบิกพัสดุ'),
-                  style: WithdrawStyles
-                      .elevatedButtonStyle, // ใช้รูปแบบปุ่มจาก Withdraw.dart
+                  style: WithdrawStyles.elevatedButtonStyle,
                 ),
               ],
             ),

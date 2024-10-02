@@ -73,77 +73,121 @@ class _WarehousePageState extends State<WarehousePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('คลังสินค้า'),
+        title: Text('เพิ่มพัสดุ'),
         backgroundColor: WarehouseStyles.appBarColor,
       ),
       body: Container(
         decoration: WarehouseStyles.backgroundDecoration,
         padding: const EdgeInsets.all(16.0),
         child: Center(
-          // ใช้ Center เพื่อจัดกลาง
+          // ใช้ Center เพื่อจัดกลางเนื้อหา
           child: SingleChildScrollView(
-            // ใช้ SingleChildScrollView เพื่อให้เลื่อนดูได้
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, // จัดกลางในแนวตั้ง
               crossAxisAlignment: CrossAxisAlignment.center, // จัดกลางในแนวนอน
               children: [
-                Text(
-                  'เลือกประเภทพัสดุ',
-                  style: WarehouseStyles.headerTextStyle,
-                ),
-                DropdownButton<String>(
-                  hint: Text('เลือกประเภท'),
-                  value: selectedCategory,
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedCategory = newValue;
-                      selectedItem =
-                          null; // รีเซ็ตตัวเลือกพัสดุเมื่อเปลี่ยนหมวดหมู่
-                    });
-                  },
-                  items: categories.keys.map((category) {
-                    return DropdownMenuItem<String>(
-                      value: category,
-                      child: Text(category),
-                    );
-                  }).toList(),
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'เลือกประเภทพัสดุ',
+                          style: WarehouseStyles.headerTextStyle,
+                        ),
+                        SizedBox(height: 10),
+                        DropdownButton<String>(
+                          hint: Text('เลือกประเภท'),
+                          value: selectedCategory,
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedCategory = newValue;
+                              selectedItem =
+                                  null; // รีเซ็ตตัวเลือกพัสดุเมื่อเปลี่ยนหมวดหมู่
+                            });
+                          },
+                          items: categories.keys.map((category) {
+                            return DropdownMenuItem<String>(
+                              value: category,
+                              child: Text(category),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 if (selectedCategory != null) ...[
                   SizedBox(height: 20),
-                  Text(
-                    'เลือกพัสดุ',
-                    style: WarehouseStyles.headerTextStyle,
-                  ),
-                  DropdownButton<String>(
-                    hint: Text('เลือกพัสดุ'),
-                    value: selectedItem,
-                    onChanged: (newValue) {
-                      setState(() {
-                        selectedItem = newValue;
-                      });
-                    },
-                    items: categories[selectedCategory]!.map((item) {
-                      return DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }).toList(),
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'เลือกพัสดุ',
+                            style: WarehouseStyles.headerTextStyle,
+                          ),
+                          SizedBox(height: 10),
+                          DropdownButton<String>(
+                            hint: Text('เลือกพัสดุ'),
+                            value: selectedItem,
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedItem = newValue;
+                              });
+                            },
+                            items: categories[selectedCategory]!.map((item) {
+                              return DropdownMenuItem<String>(
+                                value: item,
+                                child: Text(item),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
                 if (selectedItem != null) ...[
                   SizedBox(height: 20),
-                  Text(
-                    'ใส่จำนวนพัสดุ',
-                    style: WarehouseStyles.headerTextStyle,
-                  ),
-                  TextField(
-                    controller: _quantityController,
-                    decoration: InputDecoration(
-                      hintText: 'กรอกจำนวน',
-                      border: WarehouseStyles.textFieldBorder,
-                      contentPadding: WarehouseStyles.textFieldPadding,
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    keyboardType: TextInputType.number,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'ใส่จำนวนพัสดุ',
+                            style: WarehouseStyles.headerTextStyle,
+                          ),
+                          SizedBox(height: 10),
+                          TextField(
+                            controller: _quantityController,
+                            decoration: InputDecoration(
+                              hintText: 'กรอกจำนวน',
+                              border: WarehouseStyles.textFieldBorder,
+                              contentPadding: WarehouseStyles.textFieldPadding,
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
                 SizedBox(height: 20),

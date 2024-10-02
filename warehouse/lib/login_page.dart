@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:warehouse/services/api_service.dart';
 import 'home_page.dart'; // นำเข้าหน้า HomePage
-import 'signup_page.dart'; // นำเข้าหน้า SignupPage
+import 'Signup_page.dart'; // นำเข้าหน้า SignupPage
 import 'styles/login.dart'; // นำเข้า login_styles.dart สำหรับตกแต่ง
 
 class LoginPage extends StatefulWidget {
@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       // แสดงข้อความผิดพลาดถ้าการล็อกอินไม่สำเร็จ
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed. Please try again.')),
+        SnackBar(content: Text('กรุณากรอกชื่อผู้ใช้และรหัสผ่านให้ครบถ้วน.')),
       );
     }
   }
@@ -50,9 +50,8 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Icon(
                   Icons.warehouse,
-                  size: 80,
-                  color: LoginStyles
-                      .primaryButtonColor, // ใช้ไอคอนเพื่อสื่อถึงธีมคลังสินค้า
+                  size: 100,
+                  color: LoginStyles.primaryButtonColor, // ใช้สีจาก LoginStyles
                 ),
                 SizedBox(height: 20),
                 Text(
@@ -61,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                       .headerTextStyle, // ใช้สไตล์ข้อความจาก LoginStyles
                   textAlign: TextAlign.center, // จัดกลางข้อความ
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 30),
                 TextField(
                   controller: _usernameController,
                   decoration: LoginStyles.inputDecoration.copyWith(
@@ -78,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   obscureText: true,
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: _login,
                   child: Text('Login',
@@ -101,7 +100,11 @@ class _LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(builder: (context) => SignupPage()),
                     );
                   },
-                  child: Text('หากยังไม่มีบัญชี กดสมัครตรงนี้เลย!!'),
+                  child: Text(
+                    'หากยังไม่มีบัญชี กดสมัครตรงนี้เลย!!',
+                    style: TextStyle(
+                        color: LoginStyles.primaryButtonColor), // ใช้สีปุ่ม
+                  ),
                 ),
               ],
             ),

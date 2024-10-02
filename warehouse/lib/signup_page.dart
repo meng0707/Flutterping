@@ -41,7 +41,11 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Signup')),
+      appBar: AppBar(
+        title: Text('Werehouse Signup'),
+        backgroundColor:
+            SignupStyles.primaryButtonColor, // ใช้สีจาก SignupStyles
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -51,6 +55,12 @@ class _SignupPageState extends State<SignupPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(height: 40), // เพิ่มระยะห่างด้านบน
+              Icon(
+                Icons.person_add,
+                size: 100,
+                color: SignupStyles.primaryButtonColor, // ใช้สีจาก SignupStyles
+              ),
+              SizedBox(height: 20), // ระยะห่างระหว่างไอคอนและหัวเรื่อง
               Text(
                 'สมัครสมาชิก',
                 style: SignupStyles.headerTextStyle,
@@ -60,13 +70,13 @@ class _SignupPageState extends State<SignupPage> {
               TextField(
                 controller: _usernameController,
                 decoration: SignupStyles.inputDecoration
-                    .copyWith(labelText: 'Username'),
+                    .copyWith(labelText: 'ชื่อผู้ใช้'),
               ),
               SizedBox(height: 20), // เพิ่มระยะห่างระหว่างฟิลด์
               TextField(
                 controller: _passwordController,
                 decoration: SignupStyles.inputDecoration
-                    .copyWith(labelText: 'Password'),
+                    .copyWith(labelText: 'รหัสผ่าน'),
                 obscureText: true,
               ),
               SizedBox(height: 20), // เพิ่มระยะห่างระหว่างฟิลด์

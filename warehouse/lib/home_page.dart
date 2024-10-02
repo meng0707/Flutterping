@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'add_page.dart';
 import 'Withdraw_page.dart';
-import 'parcellist_page.dart';
+import 'Parcellist_page.dart';
 import 'styles/home.dart'; // นำเข้า styles.dart
 
 class HomePage extends StatelessWidget {
@@ -9,22 +9,21 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
-        backgroundColor: Colors.blueAccent,
+        title: Text('Home Page', style: AppStyles.appBarTheme.titleTextStyle),
+        backgroundColor: AppStyles.primaryButtonColor,
       ),
       body: Center(
-        // ใช้ Center เพื่อจัดให้อยู่กึ่งกลาง
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center, // กึ่งกลางแนวนอน
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _buildHomeButton(
                 context,
                 'เพิ่มพัสดุ',
                 Icons.add_box,
-                const Color.fromARGB(255, 46, 108, 216),
+                AppStyles.primaryButtonColor,
                 WarehousePage(),
               ),
               SizedBox(height: 20),
@@ -32,7 +31,7 @@ class HomePage extends StatelessWidget {
                 context,
                 'เบิกพัสดุ',
                 Icons.assignment,
-                const Color.fromARGB(255, 49, 39, 190),
+                AppStyles.secondaryButtonColor,
                 RequisitionPage(),
               ),
               SizedBox(height: 20),
@@ -40,7 +39,7 @@ class HomePage extends StatelessWidget {
                 context,
                 'แสดงรายการพัสดุ',
                 Icons.list,
-                const Color.fromARGB(255, 60, 70, 214),
+                AppStyles.primaryButtonColor,
                 ParcelListPage(),
               ),
             ],
@@ -62,12 +61,12 @@ class HomePage extends StatelessWidget {
       icon: Icon(icon, size: 30, color: Colors.white),
       label: Text(
         title,
-        style: AppStyles.buttonTextStyle, // ใช้สไตล์จาก styles.dart
+        style: AppStyles.buttonTextStyle,
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
-        padding: AppStyles.buttonPadding, // ใช้ padding จาก styles.dart
-        shape: AppStyles.buttonShape, // ใช้รูปร่างปุ่มจาก styles.dart
+        padding: AppStyles.buttonPadding,
+        shape: AppStyles.buttonShape,
       ),
     );
   }

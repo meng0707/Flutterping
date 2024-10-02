@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:warehouse/services/api_service.dart'; // นำเข้า ApiService ที่ใช้เชื่อมต่อ API
-import 'styles/parcellist.dart'; // นำเข้าไฟล์สำหรับการตกแต่ง
-import 'item_edit_page.dart'; // นำเข้า ItemEditPage
+import 'package:warehouse/services/api_service.dart';
+import 'styles/parcellist.dart';
+import 'item_edit_page.dart';
+import 'parcel_detail_page.dart'; // นำเข้า ParcelDetailPage ที่สร้างขึ้นใหม่
 
 class ParcelListPage extends StatefulWidget {
   @override
@@ -9,21 +10,20 @@ class ParcelListPage extends StatefulWidget {
 }
 
 class _ParcelListPageState extends State<ParcelListPage> {
-  List<dynamic> parcels = []; // เก็บข้อมูลพัสดุที่ดึงมา
+  List<dynamic> parcels = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchParcels(); // ดึงข้อมูลเมื่อหน้าโหลด
+    _fetchParcels();
   }
 
   Future<void> _fetchParcels() async {
     try {
-      // ดึงข้อมูลพัสดุจาก API
       List<dynamic> fetchedParcels = await ApiService.fetchParcels();
-      print('Fetched parcels: $fetchedParcels'); // Debug ตรงนี้
+      print('Fetched parcels: $fetchedParcels');
       setState(() {
-        parcels = fetchedParcels; // ตั้งค่าข้อมูลที่ดึงมา
+        parcels = fetchedParcels;
       });
     } catch (e) {
       print('Error fetching parcels: $e');
@@ -32,13 +32,11 @@ class _ParcelListPageState extends State<ParcelListPage> {
 
   Future<void> _deleteParcel(String itemId) async {
     try {
-      final response =
-          await ApiService.deleteParcel(itemId); // เรียกใช้ฟังก์ชันลบพัสดุ
-      if (response != null && response.statusCode == 200) {
+      final response = await ApiService.deleteParcel(itemId);
+      if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('ลบพัสดุเรียบร้อยแล้ว')),
         );
-        // อัปเดตรายการหลังจากลบ
         _fetchParcels();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -47,6 +45,9 @@ class _ParcelListPageState extends State<ParcelListPage> {
       }
     } catch (e) {
       print('Error deleting parcel: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('เกิดข้อผิดพลาดในการลบพัสดุ')),
+      );
     }
   }
 
@@ -55,28 +56,24 @@ class _ParcelListPageState extends State<ParcelListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'รายการพัสดุ',
-          style:
-              ParcelListStyles.appBarTextStyle, // ใช้สไตล์จาก parcellist.dart
+          'แสดงรายการพัสดุ',
+          style: ParcelListStyles.appBarTextStyle,
         ),
-        backgroundColor:
-            ParcelListStyles.appBarColor, // ใช้สีจาก parcellist.dart
+        backgroundColor: ParcelListStyles.appBarColor,
       ),
       body: parcels.isEmpty
           ? Center(
               child: Text(
                 'ไม่พบข้อมูลพัสดุ',
-                style: ParcelListStyles
-                    .emptyTextStyle, // ใช้สไตล์จาก parcellist.dart
+                style: ParcelListStyles.emptyTextStyle,
               ),
-            ) // แสดงข้อความเมื่อไม่พบข้อมูล
+            )
           : ListView.builder(
               itemCount: parcels.length,
               itemBuilder: (context, index) {
                 final parcel = parcels[index];
                 return Card(
-                  margin: ParcelListStyles
-                      .cardMargin, // ใช้ระยะห่างจาก parcellist.dart
+                  margin: ParcelListStyles.cardMargin,
                   elevation: 4.0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
@@ -84,26 +81,36 @@ class _ParcelListPageState extends State<ParcelListPage> {
                   child: ListTile(
                     title: Text(
                       'ชื่อพัสดุ: ${parcel['item']}',
-                      style: ParcelListStyles
-                          .titleTextStyle, // ใช้สไตล์จาก parcellist.dart
+                      style: ParcelListStyles.titleTextStyle,
                     ),
                     subtitle: Text(
                       'หมวดหมู่: ${parcel['category']} - จำนวน: ${parcel['quantity']}',
-                      style: ParcelListStyles
-                          .subtitleTextStyle, // ใช้สไตล์จาก parcellist.dart
+                      style: ParcelListStyles.subtitleTextStyle,
                     ),
+                    onTap: () {
+                      // เมื่อกดที่ ListTile จะแสดงหน้ารายละเอียดพัสดุ
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ParcelDetailPage(
+                            itemName: parcel['item'],
+                            category: parcel['category'],
+                            quantity: parcel['quantity'],
+                          ),
+                        ),
+                      );
+                    },
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
                           icon: Icon(Icons.edit),
                           onPressed: () {
-                            // นำทางไปยังหน้าแก้ไขเมื่อกดปุ่มแก้ไข
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ItemEditPage(
-                                  itemId: parcel['_id'], // รหัสพัสดุ
+                                  itemId: parcel['_id'],
                                   itemName: parcel['item'],
                                   category: parcel['category'],
                                   quantity: parcel['quantity'],
@@ -115,7 +122,6 @@ class _ParcelListPageState extends State<ParcelListPage> {
                         IconButton(
                           icon: Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
-                            // ยืนยันการลบก่อนทำการลบ
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -127,16 +133,14 @@ class _ParcelListPageState extends State<ParcelListPage> {
                                     TextButton(
                                       child: Text('ยกเลิก'),
                                       onPressed: () {
-                                        Navigator.of(context)
-                                            .pop(); // ปิดกล่องยืนยัน
+                                        Navigator.of(context).pop();
                                       },
                                     ),
                                     TextButton(
                                       child: Text('ยืนยัน'),
                                       onPressed: () {
-                                        _deleteParcel(parcel['_id']); // ลบพัสดุ
-                                        Navigator.of(context)
-                                            .pop(); // ปิดกล่องยืนยัน
+                                        _deleteParcel(parcel['_id']);
+                                        Navigator.of(context).pop();
                                       },
                                     ),
                                   ],

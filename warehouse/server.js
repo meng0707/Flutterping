@@ -53,20 +53,30 @@ app.post('/signup', async (req, res) => {
 });
 
 // API สำหรับล็อกอิน
+// API สำหรับล็อกอิน
 app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username, password });
+
     if (!user) {
       return res.status(401).send('Invalid username or password');
     }
-    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+
+    // สร้าง Access Token
+    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '10m' });
+
+    // สร้าง Refresh Token
+    const refreshToken = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+    // ส่งข้อมูลทั้งสองใน JSON response
+    res.json({ token, refreshToken });
   } catch (err) {
     console.error('Error logging in:', err);
     res.status(500).send('Error logging in');
   }
 });
+
 
 // Middleware เพื่อตรวจสอบ JWT token
 const verifyToken = (req, res, next) => {

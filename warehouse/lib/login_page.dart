@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Warehouse Login'),
+        title: Text('Application login'),
         backgroundColor: LoginStyles.primaryButtonColor, // ใช้สีจาก LoginStyles
       ),
       body: Center(
@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Login to Warehouse',
+                  'Login to application',
                   style: LoginStyles
                       .headerTextStyle, // ใช้สไตล์ข้อความจาก LoginStyles
                   textAlign: TextAlign.center, // จัดกลางข้อความ

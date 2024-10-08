@@ -36,7 +36,7 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome to Warehouse App'),
+        title: Text('Welcome to application'),
         backgroundColor: AppStyles.primaryColor, // ใช้สีจาก styles.dart
       ),
       body: Center(
@@ -73,7 +73,7 @@ class MyHomePage extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'ยินดีต้อนรับสู่ระบบคลังสินค้า',
+                  'ยินดีต้อนรับเข้าสู่ระบบจัดการพัสดุภายในหน่วยงาน',
                   style: AppStyles.headerTextStyle.copyWith(
                     fontSize: 24, // เพิ่มขนาดฟอนต์
                     color: AppStyles.primaryColor, // ใช้สีจาก styles.dart

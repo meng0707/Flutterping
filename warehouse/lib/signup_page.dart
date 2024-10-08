@@ -42,7 +42,7 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Werehouse Signup'),
+        title: Text('Application signup'),
         backgroundColor:
             SignupStyles.primaryButtonColor, // ใช้สีจาก SignupStyles
       ),
@@ -62,7 +62,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
               SizedBox(height: 20), // ระยะห่างระหว่างไอคอนและหัวเรื่อง
               Text(
-                'สมัครสมาชิก',
+                'Signup to application ',
                 style: SignupStyles.headerTextStyle,
                 textAlign: TextAlign.center,
               ),
